@@ -26,4 +26,12 @@ public class TicketWorker {
         Ticket ticket = ticketService.generateTickets(getReservation(job));
         client.newCompleteCommand(job.getKey()).variables(ticket).send().join();
     }
+
+    @ZeebeWorker(type = "send-ticket")
+    public void sendTicket(final JobClient client, final ActivatedJob job) {
+        Ticket ticket = getTicket(job);
+        logger.info("sending ticket {} to customer", ticket.getCode());
+        client.newCompleteCommand(job.getKey()).send().join();
+        logger.info(ticket.getInfo());
+    }
 }

@@ -43,12 +43,11 @@
         <zeebe:taskDefinition type="generate-ticket" retries="1" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0m3tmbr</bpmn:incoming>
-      <bpmn:outgoing>Flow_01ci4r6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0y8xcvs</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="Event_0lvcuy0" name="reservation successful">
-      <bpmn:incoming>Flow_01ci4r6</bpmn:incoming>
+      <bpmn:incoming>Flow_0okrwwq</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_01ci4r6" sourceRef="Activity_1y4x7l8" targetRef="Event_0lvcuy0" />
     <bpmn:sequenceFlow id="Flow_1ce31r4" name="no" sourceRef="Gateway_1khi0ja" targetRef="Activity_102ub7j">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= seatsAvailable=false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -89,6 +88,15 @@
       <bpmn:errorEventDefinition id="ErrorEventDefinition_1ly4ozv" errorRef="Error_19k68lu" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0ekq5g5" sourceRef="Event_1fqmega" targetRef="Activity_0gniyds" />
+    <bpmn:sequenceFlow id="Flow_0y8xcvs" sourceRef="Activity_1y4x7l8" targetRef="Activity_1chqxpf" />
+    <bpmn:sequenceFlow id="Flow_0okrwwq" sourceRef="Activity_1chqxpf" targetRef="Event_0lvcuy0" />
+    <bpmn:serviceTask id="Activity_1chqxpf" name="send ticket">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-ticket" retries="1" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0y8xcvs</bpmn:incoming>
+      <bpmn:outgoing>Flow_0okrwwq</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmn:message id="Message_0bgv37i" name="SeatsVerifiedByCustomer">
     <bpmn:extensionElements>
@@ -98,10 +106,6 @@
   <bpmn:error id="Error_19k68lu" name="Transaction Error" errorCode="Transaction_Error" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="bpmn-cinema-ticket-reservation">
-      <bpmndi:BPMNEdge id="Flow_01ci4r6_di" bpmnElement="Flow_01ci4r6">
-        <di:waypoint x="1090" y="127" />
-        <di:waypoint x="1152" y="127" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0m3tmbr_di" bpmnElement="Flow_0m3tmbr">
         <di:waypoint x="940" y="127" />
         <di:waypoint x="990" y="127" />
@@ -154,6 +158,14 @@
         <di:waypoint x="910" y="185" />
         <di:waypoint x="910" y="320" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y8xcvs_di" bpmnElement="Flow_0y8xcvs">
+        <di:waypoint x="1090" y="127" />
+        <di:waypoint x="1140" y="127" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0okrwwq_di" bpmnElement="Flow_0okrwwq">
+        <di:waypoint x="1240" y="127" />
+        <di:waypoint x="1292" y="127" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="172" y="109" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -167,12 +179,6 @@
         <dc:Bounds x="425" y="102" width="50" height="50" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="411" y="78" width="79" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0lvcuy0_di" bpmnElement="Event_0lvcuy0">
-        <dc:Bounds x="1152" y="109" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="1143" y="152" width="55" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1qo949b_di" bpmnElement="Activity_1y4x7l8">
@@ -198,6 +204,15 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_01gf86j_di" bpmnElement="Activity_0gniyds">
         <dc:Bounds x="840" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1s6f5bk_di" bpmnElement="Activity_1chqxpf">
+        <dc:Bounds x="1140" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0lvcuy0_di" bpmnElement="Event_0lvcuy0">
+        <dc:Bounds x="1292" y="109" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1283" y="152" width="55" height="27" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0tik7f3_di" bpmnElement="Event_1urwc5l">
         <dc:Bounds x="732" y="292" width="36" height="36" />
