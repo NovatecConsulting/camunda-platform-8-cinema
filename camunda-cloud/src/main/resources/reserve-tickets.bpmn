@@ -208,7 +208,7 @@
       <bpmndi:BPMNShape id="Event_04yoiv7_di" bpmnElement="Event_1fqmega">
         <dc:Bounds x="892" y="149" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="927" y="192" width="85" height="14" />
+          <dc:Bounds x="917" y="192" width="85" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
