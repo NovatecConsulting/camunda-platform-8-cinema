@@ -6,6 +6,7 @@ Camunda Cinema Cloud is a showcase for the Camunda Cloud platform
 
 ### Techniques
 - Messages
+- Errors
 - Timer
 - Gateways
 
