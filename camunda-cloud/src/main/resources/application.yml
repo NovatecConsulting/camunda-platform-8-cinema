@@ -1,0 +1,11 @@
+server:
+  port: 8087
+zeebe:
+  client:
+    cloud:
+      clusterId: <FILL_ME>
+      clientId: <FILL_ME>
+      clientSecret: <FILL_ME>
+    worker:
+      defaultName: bpmnCinemaWorker
+      threads: 3

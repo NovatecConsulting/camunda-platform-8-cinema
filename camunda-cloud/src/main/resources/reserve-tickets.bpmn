@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_14p88q7" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="1.0.0">
+  <bpmn:process id="bpmn-cinema-ticket-reservation" name="BPMN Cinema" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="reserve tickets">
+      <bpmn:outgoing>Flow_16njlwz</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_16njlwz" sourceRef="StartEvent_1" targetRef="Activity_13umxk2" />
+    <bpmn:serviceTask id="Activity_13umxk2" name="check seat availablility">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="check-seats" retries="1" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_16njlwz</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hx7vfi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_1khi0ja" name="seats available?">
+      <bpmn:incoming>Flow_0hx7vfi</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wup0vm</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ce31r4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0hx7vfi" sourceRef="Activity_13umxk2" targetRef="Gateway_1khi0ja" />
+    <bpmn:sequenceFlow id="Flow_0wup0vm" name="yes" sourceRef="Gateway_1khi0ja" targetRef="Activity_1vnkyvf">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= seatsAvailable=true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_1vnkyvf" name="reserve seats">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="reserve-seats" retries="1" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wup0vm</bpmn:incoming>
+      <bpmn:incoming>Flow_1dgi7wc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dhskfp</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0dhskfp" sourceRef="Activity_1vnkyvf" targetRef="Activity_1t1g1n9" />
+    <bpmn:serviceTask id="Activity_1t1g1n9" name="withdraw money">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="get-money" retries="1" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0dhskfp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0m3tmbr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0m3tmbr" sourceRef="Activity_1t1g1n9" targetRef="Activity_1y4x7l8" />
+    <bpmn:serviceTask id="Activity_1y4x7l8" name="generate ticket">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="generate-ticket" retries="1" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0m3tmbr</bpmn:incoming>
+      <bpmn:outgoing>Flow_01ci4r6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_0lvcuy0" name="reservation successful">
+      <bpmn:incoming>Flow_01ci4r6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_01ci4r6" sourceRef="Activity_1y4x7l8" targetRef="Event_0lvcuy0" />
+    <bpmn:sequenceFlow id="Flow_1ce31r4" name="no" sourceRef="Gateway_1khi0ja" targetRef="Activity_102ub7j">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= seatsAvailable=false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_102ub7j" name="provide alternate seats">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="alt-seats" retries="1" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ce31r4</bpmn:incoming>
+      <bpmn:outgoing>Flow_00f05o5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_1urwc5l" name="2 minutes" attachedToRef="Activity_1wxiwow">
+      <bpmn:outgoing>Flow_0ub7o40</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_19fq2y9">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT2M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0ub7o40" sourceRef="Event_1urwc5l" targetRef="Activity_0gniyds" />
+    <bpmn:endEvent id="Event_1h4s8iy" name="reservation failed">
+      <bpmn:incoming>Flow_0wo81id</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0wo81id" sourceRef="Activity_0gniyds" targetRef="Event_1h4s8iy" />
+    <bpmn:serviceTask id="Activity_0gniyds" name="cancel reservation">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="release-seats" retries="1" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ub7o40</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wo81id</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_00f05o5" sourceRef="Activity_102ub7j" targetRef="Activity_1wxiwow" />
+    <bpmn:receiveTask id="Activity_1wxiwow" name="Verified by customer" messageRef="Message_0bgv37i">
+      <bpmn:incoming>Flow_00f05o5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dgi7wc</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:sequenceFlow id="Flow_1dgi7wc" sourceRef="Activity_1wxiwow" targetRef="Activity_1vnkyvf" />
+  </bpmn:process>
+  <bpmn:message id="Message_0bgv37i" name="seats_verified">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="= reservationId" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="bpmn-cinema-ticket-reservation">
+      <bpmndi:BPMNEdge id="Flow_01ci4r6_di" bpmnElement="Flow_01ci4r6">
+        <di:waypoint x="1090" y="127" />
+        <di:waypoint x="1152" y="127" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0m3tmbr_di" bpmnElement="Flow_0m3tmbr">
+        <di:waypoint x="940" y="127" />
+        <di:waypoint x="990" y="127" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dhskfp_di" bpmnElement="Flow_0dhskfp">
+        <di:waypoint x="780" y="127" />
+        <di:waypoint x="840" y="127" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wup0vm_di" bpmnElement="Flow_0wup0vm">
+        <di:waypoint x="475" y="127" />
+        <di:waypoint x="680" y="127" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="570" y="109" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hx7vfi_di" bpmnElement="Flow_0hx7vfi">
+        <di:waypoint x="360" y="127" />
+        <di:waypoint x="425" y="127" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16njlwz_di" bpmnElement="Flow_16njlwz">
+        <di:waypoint x="208" y="127" />
+        <di:waypoint x="260" y="127" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ce31r4_di" bpmnElement="Flow_1ce31r4">
+        <di:waypoint x="450" y="152" />
+        <di:waypoint x="450" y="270" />
+        <di:waypoint x="520" y="270" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="459" y="209" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ub7o40_di" bpmnElement="Flow_0ub7o40">
+        <di:waypoint x="750" y="328" />
+        <di:waypoint x="750" y="360" />
+        <di:waypoint x="890" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wo81id_di" bpmnElement="Flow_0wo81id">
+        <di:waypoint x="990" y="360" />
+        <di:waypoint x="1052" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00f05o5_di" bpmnElement="Flow_00f05o5">
+        <di:waypoint x="620" y="270" />
+        <di:waypoint x="680" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dgi7wc_di" bpmnElement="Flow_1dgi7wc">
+        <di:waypoint x="730" y="230" />
+        <di:waypoint x="730" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="172" y="109" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="155" y="152" width="71" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mai4ro_di" bpmnElement="Activity_13umxk2">
+        <dc:Bounds x="260" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1khi0ja_di" bpmnElement="Gateway_1khi0ja" isMarkerVisible="true">
+        <dc:Bounds x="425" y="102" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="411" y="78" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0lvcuy0_di" bpmnElement="Event_0lvcuy0">
+        <dc:Bounds x="1152" y="109" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1143" y="152" width="55" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qo949b_di" bpmnElement="Activity_1y4x7l8">
+        <dc:Bounds x="990" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0d0eti9_di" bpmnElement="Activity_1vnkyvf">
+        <dc:Bounds x="680" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mc27e1_di" bpmnElement="Activity_1t1g1n9">
+        <dc:Bounds x="840" y="87" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01gf86j_di" bpmnElement="Activity_0gniyds">
+        <dc:Bounds x="890" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1h4s8iy_di" bpmnElement="Event_1h4s8iy">
+        <dc:Bounds x="1052" y="342" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1028" y="393" width="84" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0swqpfl_di" bpmnElement="Activity_1wxiwow">
+        <dc:Bounds x="680" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1kvbozj_di" bpmnElement="Activity_102ub7j">
+        <dc:Bounds x="520" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0tik7f3_di" bpmnElement="Event_1urwc5l">
+        <dc:Bounds x="732" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="766" y="323" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

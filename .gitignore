@@ -1,0 +1,6 @@
+.gradle/
+.idea/
+gradle.properties
+build/
+**/camunda-license.txt
+**/.DS_Store

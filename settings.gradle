@@ -1,0 +1,5 @@
+rootProject.name = 'camunda-cinema-cloud'
+
+include 'camunda-cloud'
+include 'services'
+include 'common'
