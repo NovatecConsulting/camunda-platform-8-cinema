@@ -9,3 +9,4 @@ zeebe:
     worker:
       defaultName: bpmnCinemaWorker
       threads: 3
+cinema.payment.service.error: false
