@@ -13,6 +13,7 @@ import static de.novatec.bpm.process.ProcessVariableHandler.getReservation;
 
 public class MoneyWorker {
 
+    private final String ERROR_CODE = "Transaction_Error";
     private final Logger logger = LoggerFactory.getLogger(MoneyWorker.class);
     private final PaymentService paymentService;
 
@@ -28,16 +29,12 @@ public class MoneyWorker {
             try {
                 paymentService.issueMoney(reservation.getPrice(), "DE12345678901234", "VOBA123456XX");
                 reservation.setTransactionSuccessful(true);
+                client.newCompleteCommand(job.getKey()).variables(reservation).send().join();
             } catch (PaymentException e) {
-                fail(client, job, e.getMessage());
+                client.newThrowErrorCommand(job.getKey()).errorCode(ERROR_CODE).errorMessage(e.getMessage()).send().join();
             }
-            client.newCompleteCommand(job.getKey()).variables(reservation).send().join();
         } else {
-            fail(client, job, "error issuing money");
+            client.newFailCommand(job.getKey()).retries(0).errorMessage("no reservation set").send();
         }
-    }
-
-    private void fail(JobClient client, ActivatedJob job, String message) {
-        client.newFailCommand(job.getKey()).retries(0).errorMessage(message).send();
     }
 }

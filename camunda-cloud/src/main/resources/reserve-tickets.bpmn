@@ -75,6 +75,7 @@
         <zeebe:taskDefinition type="release-seats" retries="1" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0ub7o40</bpmn:incoming>
+      <bpmn:incoming>Flow_0ekq5g5</bpmn:incoming>
       <bpmn:outgoing>Flow_0wo81id</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_00f05o5" sourceRef="Activity_102ub7j" targetRef="Activity_1wxiwow" />
@@ -83,12 +84,18 @@
       <bpmn:outgoing>Flow_1dgi7wc</bpmn:outgoing>
     </bpmn:receiveTask>
     <bpmn:sequenceFlow id="Flow_1dgi7wc" sourceRef="Activity_1wxiwow" targetRef="Activity_1vnkyvf" />
+    <bpmn:boundaryEvent id="Event_1fqmega" name="Transaction Error" attachedToRef="Activity_1t1g1n9">
+      <bpmn:outgoing>Flow_0ekq5g5</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1ly4ozv" errorRef="Error_19k68lu" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0ekq5g5" sourceRef="Event_1fqmega" targetRef="Activity_0gniyds" />
   </bpmn:process>
   <bpmn:message id="Message_0bgv37i" name="SeatsVerifiedByCustomer">
     <bpmn:extensionElements>
       <zeebe:subscription correlationKey="= reservationId" />
     </bpmn:extensionElements>
   </bpmn:message>
+  <bpmn:error id="Error_19k68lu" name="Transaction Error" errorCode="Transaction_Error" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="bpmn-cinema-ticket-reservation">
       <bpmndi:BPMNEdge id="Flow_01ci4r6_di" bpmnElement="Flow_01ci4r6">
@@ -129,10 +136,10 @@
       <bpmndi:BPMNEdge id="Flow_0ub7o40_di" bpmnElement="Flow_0ub7o40">
         <di:waypoint x="750" y="328" />
         <di:waypoint x="750" y="360" />
-        <di:waypoint x="890" y="360" />
+        <di:waypoint x="840" y="360" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0wo81id_di" bpmnElement="Flow_0wo81id">
-        <di:waypoint x="990" y="360" />
+        <di:waypoint x="940" y="360" />
         <di:waypoint x="1052" y="360" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00f05o5_di" bpmnElement="Flow_00f05o5">
@@ -142,6 +149,10 @@
       <bpmndi:BPMNEdge id="Flow_1dgi7wc_di" bpmnElement="Flow_1dgi7wc">
         <di:waypoint x="730" y="230" />
         <di:waypoint x="730" y="167" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ekq5g5_di" bpmnElement="Flow_0ekq5g5">
+        <di:waypoint x="910" y="185" />
+        <di:waypoint x="910" y="320" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="172" y="109" width="36" height="36" />
@@ -173,9 +184,6 @@
       <bpmndi:BPMNShape id="Activity_0mc27e1_di" bpmnElement="Activity_1t1g1n9">
         <dc:Bounds x="840" y="87" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_01gf86j_di" bpmnElement="Activity_0gniyds">
-        <dc:Bounds x="890" y="320" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_1h4s8iy_di" bpmnElement="Event_1h4s8iy">
         <dc:Bounds x="1052" y="342" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -188,10 +196,19 @@
       <bpmndi:BPMNShape id="Activity_1kvbozj_di" bpmnElement="Activity_102ub7j">
         <dc:Bounds x="520" y="230" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01gf86j_di" bpmnElement="Activity_0gniyds">
+        <dc:Bounds x="840" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0tik7f3_di" bpmnElement="Event_1urwc5l">
         <dc:Bounds x="732" y="292" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="766" y="323" width="48" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_04yoiv7_di" bpmnElement="Event_1fqmega">
+        <dc:Bounds x="892" y="149" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="927" y="192" width="85" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
