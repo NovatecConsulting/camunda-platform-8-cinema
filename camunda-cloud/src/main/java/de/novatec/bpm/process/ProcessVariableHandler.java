@@ -1,4 +1,4 @@
-package de.novatec.bpm.variables;
+package de.novatec.bpm.process;
 
 import de.novatec.bpm.model.Reservation;
 import io.camunda.zeebe.client.api.response.ActivatedJob;

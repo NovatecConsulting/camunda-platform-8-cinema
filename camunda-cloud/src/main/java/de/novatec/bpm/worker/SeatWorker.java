@@ -2,7 +2,7 @@ package de.novatec.bpm.worker;
 
 import de.novatec.bpm.model.Reservation;
 import de.novatec.bpm.service.SeatService;
-import de.novatec.bpm.variable.ProcessVariables;
+import de.novatec.bpm.process.ProcessVariables;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
@@ -14,8 +14,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static de.novatec.bpm.variables.ProcessVariableHandler.getReservation;
-import static de.novatec.bpm.variables.ProcessVariableHandler.getSeats;
+import static de.novatec.bpm.process.ProcessVariableHandler.getReservation;
+import static de.novatec.bpm.process.ProcessVariableHandler.getSeats;
 
 public class SeatWorker {
 

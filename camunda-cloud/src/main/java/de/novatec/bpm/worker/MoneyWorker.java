@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static de.novatec.bpm.variables.ProcessVariableHandler.getSeats;
+import static de.novatec.bpm.process.ProcessVariableHandler.getSeats;
 
 public class MoneyWorker {
 
@@ -25,7 +25,7 @@ public class MoneyWorker {
     }
 
     @ZeebeWorker(type = "get-money")
-    public void getMoney(final JobClient client, final ActivatedJob job) throws JsonProcessingException {
+    public void getMoney(final JobClient client, final ActivatedJob job) {
         logger.info("withdrawing money");
         List<String> seats = getSeats(job);
         if (seats != null) {

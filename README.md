@@ -10,9 +10,10 @@ Camunda Cinema Cloud is a showcase for the Camunda Cloud platform
 - Gateways
 
 ## Process Model
-<img src="camunda-cloud/src/main/resources/reserve-tickets.png" width="900">
+<img alt="process model" src="camunda-cloud/src/main/resources/reserve-tickets.png" width="900">
 
 ## How to run it
+- generate a client configuration on you Camunda Cloud account (tab API)
 - add your camunda cloud cluster credentials to the `src/main/resources/application.yml`
 - start the application
     - run `./gradlew bootRun` from your terminal

@@ -84,7 +84,7 @@
     </bpmn:receiveTask>
     <bpmn:sequenceFlow id="Flow_1dgi7wc" sourceRef="Activity_1wxiwow" targetRef="Activity_1vnkyvf" />
   </bpmn:process>
-  <bpmn:message id="Message_0bgv37i" name="seats_verified">
+  <bpmn:message id="Message_0bgv37i" name="SeatsVerifiedByCustomer">
     <bpmn:extensionElements>
       <zeebe:subscription correlationKey="= reservationId" />
     </bpmn:extensionElements>

@@ -2,7 +2,6 @@ package de.novatec.bpm.controller;
 
 import de.novatec.bpm.model.Reservation;
 import io.camunda.zeebe.client.ZeebeClient;
-import io.camunda.zeebe.client.api.response.ProcessInstanceEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -10,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+
+import static de.novatec.bpm.process.ProcessMessage.SEATS_VERIFIED;
 
 @RestController
 public class CinemaController {
@@ -36,7 +37,7 @@ public class CinemaController {
 
     @GetMapping("/offer/{id}")
     public ResponseEntity<String> acceptOffer(@PathVariable String id) {
-        zeebeClient.newPublishMessageCommand().messageName("seats_verified").correlationKey(id).send().join();
+        zeebeClient.newPublishMessageCommand().messageName(SEATS_VERIFIED.getName()).correlationKey(id).send().join();
         logger.info("The offer for reservation {} was accepted", id);
         return new ResponseEntity<>("Reservation change accepted", HttpStatus.OK);
     }

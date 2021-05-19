@@ -1,9 +1,8 @@
-package de.novatec.bpm.message;
+package de.novatec.bpm.process;
 
 public enum ProcessMessage {
 
-    ISSUE_TICKETS("IssueTickets"),
-    TICKETS_VERIFIED("SeatsVerifiedByCustomer");
+    SEATS_VERIFIED("SeatsVerifiedByCustomer");
 
     private final String name;
 
