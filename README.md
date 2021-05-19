@@ -5,10 +5,12 @@ Camunda Cinema Cloud is a showcase for the Camunda Cloud platform
 - Zeebe 1.0.0
 
 ### Techniques
-- Messages
-- Errors
-- Timer
-- Gateways
+- Zeebe Workers in Springboot
+- BPMN
+    - Messages
+    - Errors
+    - Timer
+    - Gateways
 
 ## Process Model
 <img alt="process model" src="camunda-cloud/src/main/resources/reserve-tickets.png" width="900">
