@@ -18,8 +18,8 @@ public class WorkerConfig {
     }
 
     @Bean
-    public SeatWorker seatWorker(SeatService seatService) {
-        return new SeatWorker(seatService);
+    public SeatWorker seatWorker(SeatService seatService, TicketService ticketService) {
+        return new SeatWorker(seatService, ticketService);
     }
 
     @Bean

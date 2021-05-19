@@ -7,10 +7,11 @@ public class Reservation {
 
     private String reservationId;
     private List<String> seats = new ArrayList<>();
-    private int price;
+    private long price;
     private Ticket ticket;
     private UserAccount userAccount;
     private String userId;
+    private boolean transactionSuccessful = false;
 
     public String getUserId() {
         return userId;
@@ -36,11 +37,11 @@ public class Reservation {
         this.seats = seats;
     }
 
-    public int getPrice() {
+    public long getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(long price) {
         this.price = price;
     }
 
@@ -63,5 +64,13 @@ public class Reservation {
     @Override
     public String toString() {
         return "Sitze " + String.join(", ", seats);
+    }
+
+    public boolean isTransactionSuccessful() {
+        return transactionSuccessful;
+    }
+
+    public void setTransactionSuccessful(boolean transactionSuccessful) {
+        this.transactionSuccessful = transactionSuccessful;
     }
 }

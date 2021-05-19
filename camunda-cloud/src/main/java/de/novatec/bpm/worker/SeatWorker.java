@@ -3,6 +3,7 @@ package de.novatec.bpm.worker;
 import de.novatec.bpm.model.Reservation;
 import de.novatec.bpm.service.SeatService;
 import de.novatec.bpm.process.ProcessVariables;
+import de.novatec.bpm.service.TicketService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
@@ -21,9 +22,11 @@ public class SeatWorker {
 
     private final Logger logger = LoggerFactory.getLogger(SeatWorker.class);
     private final SeatService seatService;
+    private final TicketService ticketService;
 
-    public SeatWorker(SeatService seatService) {
+    public SeatWorker(SeatService seatService, TicketService ticketService) {
         this.seatService = seatService;
+        this.ticketService = ticketService;
     }
 
     @Value("${server.port:8080}")
@@ -45,10 +48,12 @@ public class SeatWorker {
     @ZeebeWorker(type = "reserve-seats")
     public void reserveSeats(final JobClient client, final ActivatedJob job) {
         logger.info("reserving seats");
-        List<String> seats = getSeats(job);
-        if (seats != null && !seats.isEmpty()) {
-            seatService.reserveSeats(seats);
-            client.newCompleteCommand(job.getKey()).send().join();
+        Reservation reservation = getReservation(job);
+        if (reservation != null) {
+            seatService.reserveSeats(reservation.getSeats());
+            long ticketPrice = ticketService.getTicketPrice(reservation);
+            reservation.setPrice(ticketPrice);
+            client.newCompleteCommand(job.getKey()).variables(reservation).send().join();
         } else {
             client.newFailCommand(job.getKey()).retries(0).errorMessage("no seats found").send();
         }

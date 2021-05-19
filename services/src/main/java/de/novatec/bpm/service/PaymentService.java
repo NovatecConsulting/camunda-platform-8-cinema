@@ -14,7 +14,7 @@ public class PaymentService {
         this.throwErrors = throwErrors;
     }
 
-    public void issueMoney(int ticketPrice, String iban, String bic) throws PaymentException {
+    public void issueMoney(long ticketPrice, String iban, String bic) throws PaymentException {
         if (throwErrors && Math.random() > 0.5) {
             logger.error("There was an issue with the payment");
             throw new PaymentException("Bank declined the transaction. Code: " + generateRandomBankReference());
