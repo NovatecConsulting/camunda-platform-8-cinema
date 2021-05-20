@@ -34,7 +34,7 @@ public class MoneyWorker {
                 client.newThrowErrorCommand(job.getKey()).errorCode(ERROR_CODE).errorMessage(e.getMessage()).send().join();
             }
         } else {
-            client.newFailCommand(job.getKey()).retries(0).errorMessage("no reservation set").send();
+            client.newFailCommand(job.getKey()).retries(0).errorMessage("no reservation set").send().join();
         }
     }
 }

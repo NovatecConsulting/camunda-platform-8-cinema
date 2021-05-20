@@ -55,7 +55,7 @@ public class SeatWorker {
             reservation.setPrice(ticketPrice);
             client.newCompleteCommand(job.getKey()).variables(reservation).send().join();
         } else {
-            client.newFailCommand(job.getKey()).retries(0).errorMessage("no seats found").send();
+            client.newFailCommand(job.getKey()).retries(0).errorMessage("no seats found").send().join();
         }
     }
 
@@ -69,7 +69,7 @@ public class SeatWorker {
             offerAltSeats(alternativeSeats, reservation.getReservationId());
             client.newCompleteCommand(job.getKey()).variables(reservation).send().join();
         } else {
-            client.newFailCommand(job.getKey()).retries(0).errorMessage("no seats found").send();
+            client.newFailCommand(job.getKey()).retries(0).errorMessage("no seats found").send().join();
         }
     }
 
@@ -81,7 +81,7 @@ public class SeatWorker {
             seatService.releaseSeats(reservation.getSeats());
             client.newCompleteCommand(job.getKey()).send().join();
         } else {
-            client.newFailCommand(job.getKey()).retries(0).errorMessage("no seats found").send();
+            client.newFailCommand(job.getKey()).retries(0).errorMessage("no seats found").send().join();
         }
     }
 
