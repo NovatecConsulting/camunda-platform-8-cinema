@@ -4,7 +4,7 @@ public enum ProcessVariables {
 
     SEATS_AVAILABLE("seatsAvailable");
 
-    private String name;
+    private final String name;
 
     ProcessVariables(String name) {
         this.name = name;
