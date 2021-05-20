@@ -21,14 +21,4 @@ public class ProcessVariableHandler {
         return reservation.getSeats();
     }
 
-    public static String getUser(ActivatedJob job) {
-        Reservation reservation = getReservation(job);
-        return reservation.getUserId();
-    }
-
-    public static String getReservationId(ActivatedJob job) {
-        Reservation reservation = getReservation(job);
-        return reservation.getReservationId();
-    }
-
 }
