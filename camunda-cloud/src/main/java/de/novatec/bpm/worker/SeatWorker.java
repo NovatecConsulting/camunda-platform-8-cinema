@@ -9,7 +9,6 @@ import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,14 +22,13 @@ public class SeatWorker {
     private final Logger logger = LoggerFactory.getLogger(SeatWorker.class);
     private final SeatService seatService;
     private final TicketService ticketService;
+    private final int port;
 
-    public SeatWorker(SeatService seatService, TicketService ticketService) {
+    public SeatWorker(SeatService seatService, TicketService ticketService, int port) {
         this.seatService = seatService;
         this.ticketService = ticketService;
+        this.port = port;
     }
-
-    @Value("${server.port:8080}")
-    private int port;
 
     @ZeebeWorker(type = "check-seats")
     public void checkSeats(final JobClient client, final ActivatedJob job) {
