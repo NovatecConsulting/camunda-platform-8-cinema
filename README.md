@@ -2,7 +2,7 @@
 Camunda Cinema Cloud is a showcase for the Camunda Cloud platform
 
 ### Engines
-- Zeebe 1.1.0
+- Zeebe 1.2.4
 
 ### Techniques
 - Zeebe Workers in Springboot
