@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import static de.novatec.bpm.process.ProcessVariableHandler.*;
 
-public class TicketWorker {
+public class TicketWorker extends AbstractWorker {
 
     Logger logger = LoggerFactory.getLogger(TicketWorker.class);
 
@@ -24,14 +24,14 @@ public class TicketWorker {
     public void generateTicket(final JobClient client, final ActivatedJob job) {
         logger.info("generating ticket");
         Ticket ticket = ticketService.generateTickets(getReservation(job));
-        client.newCompleteCommand(job.getKey()).variables(ticket).send().join();
+        completeJob(client, job);
     }
 
     @ZeebeWorker(type = "send-ticket")
     public void sendTicket(final JobClient client, final ActivatedJob job) {
         Ticket ticket = getTicket(job);
         logger.info("sending ticket {} to customer", ticket.getCode());
-        client.newCompleteCommand(job.getKey()).send().join();
+        completeJob(client, job);
         logger.info(ticket.getInfo());
     }
 }

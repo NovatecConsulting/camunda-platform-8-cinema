@@ -35,7 +35,7 @@ public class CinemaController {
         return new ResponseEntity<>("Reservation issued: " + reservationId, HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("/offer/{id}")
+    @GetMapping("/reservation/offer/{id}")
     public ResponseEntity<String> acceptOffer(@PathVariable String id) {
         zeebeClient.newPublishMessageCommand().messageName(SEATS_VERIFIED.getName()).correlationKey(id).send().join();
         logger.info("The offer for reservation {} was accepted", id);

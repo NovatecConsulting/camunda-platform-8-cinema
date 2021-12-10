@@ -17,7 +17,7 @@ import java.util.Map;
 import static de.novatec.bpm.process.ProcessVariableHandler.getReservation;
 import static de.novatec.bpm.process.ProcessVariableHandler.getSeats;
 
-public class SeatWorker {
+public class SeatWorker extends AbstractWorker {
 
     private final Logger logger = LoggerFactory.getLogger(SeatWorker.class);
     private final SeatService seatService;
@@ -36,10 +36,10 @@ public class SeatWorker {
         List<String> seats = getSeats(job);
         if (seats != null && !seats.isEmpty()) {
             boolean available = seatService.seatsAvailable(seats);
-            Map<String, Boolean> variables = Collections.singletonMap(ProcessVariables.SEATS_AVAILABLE.getName(), available);
-            client.newCompleteCommand(job.getKey()).variables(variables).send().join();
+            Map<String, Object> variables = Collections.singletonMap(ProcessVariables.SEATS_AVAILABLE.getName(), available);
+            completeJob(client, job, variables);
         } else {
-            client.newFailCommand(job.getKey()).retries(0).errorMessage("no seats found").send();
+            failJob(client, job, "no seats found");
         }
     }
 
@@ -51,9 +51,9 @@ public class SeatWorker {
             seatService.reserveSeats(reservation.getSeats());
             long ticketPrice = ticketService.getTicketPrice(reservation);
             reservation.setPrice(ticketPrice);
-            client.newCompleteCommand(job.getKey()).variables(reservation).send().join();
+            completeJob(client, job, reservation);
         } else {
-            client.newFailCommand(job.getKey()).retries(0).errorMessage("no seats found").send().join();
+            failJob(client, job, "no seats found");
         }
     }
 
@@ -65,9 +65,9 @@ public class SeatWorker {
             List<String> alternativeSeats = seatService.getAlternativeSeats(reservation.getSeats());
             reservation.setSeats(alternativeSeats);
             offerAltSeats(alternativeSeats, reservation.getReservationId());
-            client.newCompleteCommand(job.getKey()).variables(reservation).send().join();
+            completeJob(client, job, reservation);
         } else {
-            client.newFailCommand(job.getKey()).retries(0).errorMessage("no seats found").send().join();
+            failJob(client, job, "no seats found");
         }
     }
 
@@ -77,14 +77,14 @@ public class SeatWorker {
         Reservation reservation = getReservation(job);
         if (reservation != null) {
             seatService.releaseSeats(reservation.getSeats());
-            client.newCompleteCommand(job.getKey()).send().join();
+            completeJob(client, job);
         } else {
-            client.newFailCommand(job.getKey()).retries(0).errorMessage("no seats found").send().join();
+            failJob(client, job, "no seats found");
         }
     }
 
     public void offerAltSeats(List<String> seats, String reservationId) {
         logger.info("The seats you selected are not available. Alternative seats are {}", seats);
-        logger.info("To accept these seats, click the following link: http://localhost:{}/offer/{}", port, reservationId);
+        logger.info("To accept these seats, click the following link: http://localhost:{}/reservation/offer/{}", port, reservationId);
     }
 }
