@@ -1,12 +1,16 @@
 package de.novatec.bpm.worker;
 
 import de.novatec.bpm.model.Ticket;
+import de.novatec.bpm.process.ProcessVariables;
 import de.novatec.bpm.service.TicketService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.Map;
 
 import static de.novatec.bpm.process.ProcessVariableHandler.*;
 
@@ -24,7 +28,8 @@ public class TicketWorker extends AbstractWorker {
     public void generateTicket(final JobClient client, final ActivatedJob job) {
         logger.info("generating ticket");
         Ticket ticket = ticketService.generateTickets(getReservation(job));
-        completeJob(client, job);
+        Map<String, Object> variables = Collections.singletonMap(ProcessVariables.TICKET.getName(), ticket);
+        completeJob(client, job, variables);
     }
 
     @ZeebeWorker(type = "send-ticket")

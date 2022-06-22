@@ -1,6 +1,7 @@
 package de.novatec.bpm.worker;
 
 import de.novatec.bpm.model.Reservation;
+import de.novatec.bpm.model.Ticket;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 
@@ -18,9 +19,20 @@ public class AbstractWorker {
                 );
     }
 
-    protected void completeJob(JobClient client, ActivatedJob job, Reservation variable) {
+    protected void completeJob(JobClient client, ActivatedJob job, Reservation reservation) {
         client.newCompleteCommand(job.getKey())
-                .variables(variable)
+                .variables(reservation)
+                .send()
+                .exceptionally(
+                        throwable -> {
+                            throw new RuntimeException("Could not complete job " + job, throwable);
+                        }
+                );
+    }
+
+    protected void completeJob(JobClient client, ActivatedJob job, Ticket ticket) {
+        client.newCompleteCommand(job.getKey())
+                .variables(ticket)
                 .send()
                 .exceptionally(
                         throwable -> {
