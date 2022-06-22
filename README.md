@@ -2,7 +2,7 @@
 Camunda Cinema Cloud is a showcase for the Camunda Cloud platform
 
 ### Engines
-- Zeebe 1.2.4
+- Camunda Platform 8 (Zeebe)
 
 ### Techniques
 - Zeebe Workers in Springboot
@@ -13,11 +13,12 @@ Camunda Cinema Cloud is a showcase for the Camunda Cloud platform
     - Gateways
 
 ## Process Model
-<img alt="process model" src="camunda-cloud/src/main/resources/reserve-tickets.png" width="900">
+<img alt="process model" src="camunda-cloud/src/main/resources/reserve-tickets.png" width="1000">
 
 ## How to run it
 - generate a client configuration on you Camunda Cloud account (tab API)
 - add your camunda cloud cluster credentials to the `src/main/resources/application.yml`
+- OR: use the local container environment (docker/docker-compose-core.yaml)
 - start the application
     - run `./gradlew bootRun` from your terminal
     - use your IDE to start the application
@@ -28,4 +29,5 @@ Camunda Cinema Cloud is a showcase for the Camunda Cloud platform
         - content-type: `application/json`
         - no auth necessary
 - check the log output
-- in case alternative seats are offered you can check Operate for the current running instance
+- OR: open (local) Operate instance (localhost:8081 user/pw: demo:demo)
+- in case alternative seats are offered you can also check Operate for the current running instance

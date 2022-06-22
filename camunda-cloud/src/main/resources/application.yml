@@ -2,10 +2,14 @@ server:
   port: 8087
 zeebe:
   client:
-    cloud:
-      clusterId: <FILL_ME>
-      clientId: <FILL_ME>
-      clientSecret: <FILL_ME>
+    # cloud:
+    #  clusterId:
+    #  clientId:
+    #  clientSecret:
+    security:
+      plaintext: true
+    broker:
+      gateway-address: 127.0.0.1:26500
     worker:
       defaultName: bpmnCinemaWorker
       threads: 3

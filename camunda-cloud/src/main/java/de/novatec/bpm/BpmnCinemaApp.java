@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @EnableZeebeClient
-@ZeebeDeployment(classPathResources = {"reserve-tickets.bpmn"})
+@ZeebeDeployment(resources = "classpath:reserve-tickets.bpmn")
 public class BpmnCinemaApp {
 
     public static void main(String[] args) {
