@@ -5,7 +5,7 @@ import de.novatec.bpm.model.Reservation;
 import de.novatec.bpm.service.PaymentService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
-import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
+import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +13,6 @@ import static de.novatec.bpm.process.ProcessVariableHandler.getReservation;
 
 public class MoneyWorker extends AbstractWorker {
 
-    private final String ERROR_CODE = "Transaction_Error";
     private final Logger logger = LoggerFactory.getLogger(MoneyWorker.class);
     private final PaymentService paymentService;
 
@@ -21,7 +20,7 @@ public class MoneyWorker extends AbstractWorker {
         this.paymentService = paymentService;
     }
 
-    @ZeebeWorker(type = "get-money")
+    @JobWorker(type = "get-money")
     public void getMoney(final JobClient client, final ActivatedJob job) {
         logger.info("withdrawing money");
         Reservation reservation = getReservation(job);
@@ -31,6 +30,7 @@ public class MoneyWorker extends AbstractWorker {
                 reservation.setTransactionSuccessful(true);
                 completeJob(client, job);
             } catch (PaymentException e) {
+                String ERROR_CODE = "Transaction_Error";
                 throwError(client, job, ERROR_CODE, e.getMessage());
             }
         } else {

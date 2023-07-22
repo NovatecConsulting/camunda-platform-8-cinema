@@ -1,12 +1,12 @@
 package de.novatec.bpm.worker;
 
 import de.novatec.bpm.model.Reservation;
-import de.novatec.bpm.service.SeatService;
 import de.novatec.bpm.process.ProcessVariables;
+import de.novatec.bpm.service.SeatService;
 import de.novatec.bpm.service.TicketService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
-import io.camunda.zeebe.spring.client.annotation.ZeebeWorker;
+import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +30,7 @@ public class SeatWorker extends AbstractWorker {
         this.port = port;
     }
 
-    @ZeebeWorker(type = "check-seats")
+    @JobWorker(type = "check-seats")
     public void checkSeats(final JobClient client, final ActivatedJob job) {
         logger.info("checking seat availability");
         List<String> seats = getSeats(job);
@@ -43,7 +43,7 @@ public class SeatWorker extends AbstractWorker {
         }
     }
 
-    @ZeebeWorker(type = "reserve-seats")
+    @JobWorker(type = "reserve-seats")
     public void reserveSeats(final JobClient client, final ActivatedJob job) {
         logger.info("reserving seats");
         Reservation reservation = getReservation(job);
@@ -57,7 +57,7 @@ public class SeatWorker extends AbstractWorker {
         }
     }
 
-    @ZeebeWorker(type = "alt-seats")
+    @JobWorker(type = "alt-seats")
     public void alternativeSeats(final JobClient client, final ActivatedJob job) {
         logger.info("getting alternative seats");
         Reservation reservation = getReservation(job);
@@ -71,7 +71,7 @@ public class SeatWorker extends AbstractWorker {
         }
     }
 
-    @ZeebeWorker(type = "release-seats")
+    @JobWorker(type = "release-seats")
     public void releaseSeats(final JobClient client, final ActivatedJob job) {
         logger.info("releasing seats");
         Reservation reservation = getReservation(job);
