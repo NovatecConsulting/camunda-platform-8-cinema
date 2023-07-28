@@ -10,9 +10,9 @@ public class TicketService {
     public static final long TICKET_PRICE = 12L;
 
     public Ticket generateTickets(Reservation reservation) {
-        Ticket ticket = new Ticket(UUID.randomUUID().toString());
-        ticket.setInfo(reservation.getUserId(), reservation.toString(), ticket.getCode());
-        return ticket;
+        String id = UUID.randomUUID().toString();
+        String info = Ticket.createInfo(reservation.getUserId(), reservation.toString(), id);
+        return new Ticket(id, info);
     }
 
     public long getTicketPrice(Reservation reservation) {

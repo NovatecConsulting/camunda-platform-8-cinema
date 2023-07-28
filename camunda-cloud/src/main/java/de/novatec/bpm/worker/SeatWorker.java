@@ -7,6 +7,7 @@ import de.novatec.bpm.service.TicketService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
+import io.camunda.zeebe.spring.client.annotation.VariablesAsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,10 +31,10 @@ public class SeatWorker extends AbstractWorker {
         this.port = port;
     }
 
-    @JobWorker(type = "check-seats")
-    public void checkSeats(final JobClient client, final ActivatedJob job) {
+    @JobWorker(type = "check-seats", autoComplete = false)
+    public void checkSeats(final JobClient client, final ActivatedJob job, @VariablesAsType Reservation reservation) {
         logger.info("checking seat availability");
-        List<String> seats = getSeats(job);
+        List<String> seats = reservation.getSeats();
         if (seats != null && !seats.isEmpty()) {
             boolean available = seatService.seatsAvailable(seats);
             Map<String, Object> variables = Collections.singletonMap(ProcessVariables.SEATS_AVAILABLE.getName(), available);
@@ -43,10 +44,9 @@ public class SeatWorker extends AbstractWorker {
         }
     }
 
-    @JobWorker(type = "reserve-seats")
-    public void reserveSeats(final JobClient client, final ActivatedJob job) {
+    @JobWorker(type = "reserve-seats", autoComplete = false)
+    public void reserveSeats(final JobClient client, final ActivatedJob job, @VariablesAsType Reservation reservation) {
         logger.info("reserving seats");
-        Reservation reservation = getReservation(job);
         if (reservation != null) {
             seatService.reserveSeats(reservation.getSeats());
             long ticketPrice = ticketService.getTicketPrice(reservation);
@@ -57,10 +57,9 @@ public class SeatWorker extends AbstractWorker {
         }
     }
 
-    @JobWorker(type = "alt-seats")
-    public void alternativeSeats(final JobClient client, final ActivatedJob job) {
+    @JobWorker(type = "alt-seats", autoComplete = false)
+    public void alternativeSeats(final JobClient client, final ActivatedJob job, @VariablesAsType Reservation reservation) {
         logger.info("getting alternative seats");
-        Reservation reservation = getReservation(job);
         if (reservation != null) {
             List<String> alternativeSeats = seatService.getAlternativeSeats(reservation.getSeats());
             reservation.setSeats(alternativeSeats);
@@ -71,10 +70,9 @@ public class SeatWorker extends AbstractWorker {
         }
     }
 
-    @JobWorker(type = "release-seats")
-    public void releaseSeats(final JobClient client, final ActivatedJob job) {
+    @JobWorker(type = "release-seats", autoComplete = false)
+    public void releaseSeats(final JobClient client, final ActivatedJob job, @VariablesAsType Reservation reservation) {
         logger.info("releasing seats");
-        Reservation reservation = getReservation(job);
         if (reservation != null) {
             seatService.releaseSeats(reservation.getSeats());
             completeJob(client, job);

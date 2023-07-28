@@ -6,6 +6,7 @@ import de.novatec.bpm.service.PaymentService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
+import io.camunda.zeebe.spring.client.annotation.VariablesAsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,14 +22,13 @@ public class MoneyWorker extends AbstractWorker {
     }
 
     @JobWorker(type = "get-money")
-    public void getMoney(final JobClient client, final ActivatedJob job) {
+    public Reservation getMoney(final JobClient client, final ActivatedJob job, @VariablesAsType Reservation reservation) {
         logger.info("withdrawing money");
-        Reservation reservation = getReservation(job);
         if (reservation != null) {
             try {
                 paymentService.issueMoney(reservation.getPrice(), "DE12345678901234", "VOBA123456XX");
                 reservation.setTransactionSuccessful(true);
-                completeJob(client, job);
+                return reservation;
             } catch (PaymentException e) {
                 String ERROR_CODE = "Transaction_Error";
                 throwError(client, job, ERROR_CODE, e.getMessage());
@@ -36,5 +36,6 @@ public class MoneyWorker extends AbstractWorker {
         } else {
             failJob(client, job, "no reservation set");
         }
+        return reservation;
     }
 }
