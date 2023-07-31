@@ -32,7 +32,7 @@
     <bpmn:sequenceFlow id="Flow_0dhskfp" sourceRef="Activity_1vnkyvf" targetRef="Activity_1t1g1n9" />
     <bpmn:serviceTask id="Activity_1t1g1n9" name="withdraw money">
       <bpmn:extensionElements>
-        <zeebe:taskDefinition type="get-money" retries="1" />
+        <zeebe:taskDefinition type="issue-money" retries="1" />
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_0dhskfp</bpmn:incoming>
       <bpmn:outgoing>Flow_0m3tmbr</bpmn:outgoing>

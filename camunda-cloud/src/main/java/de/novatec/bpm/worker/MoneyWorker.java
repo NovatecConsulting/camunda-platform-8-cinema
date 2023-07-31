@@ -25,17 +25,15 @@ public class MoneyWorker extends AbstractWorker {
         this.ticketService = ticketService;
     }
 
-    @JobWorker(type = "get-money")
-    public Map<String, Object> getMoney(final JobClient client, final ActivatedJob job, @Variable List<String> seats) {
+    @JobWorker(type = "issue-money")
+    public void issueMoney(final JobClient client, final ActivatedJob job, @Variable List<String> seats) {
         logger.info("withdrawing money");
         try {
             long ticketPrice = ticketService.getTicketPrice(seats);
             paymentService.issueMoney(ticketPrice, "DE12345678901234", "VOBA123456XX");
-            return Map.of("transactionSuccessful", true);
         } catch (PaymentException e) {
             String ERROR_CODE = "Transaction_Error";
             throwError(client, job, ERROR_CODE, e.getMessage());
-            return Map.of("transactionSuccessful", false);
         }
     }
 }
