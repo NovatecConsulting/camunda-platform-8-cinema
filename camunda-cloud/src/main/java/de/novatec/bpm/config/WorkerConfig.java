@@ -1,6 +1,7 @@
 package de.novatec.bpm.config;
 
 import de.novatec.bpm.service.PaymentService;
+import de.novatec.bpm.service.QRCodeService;
 import de.novatec.bpm.service.SeatService;
 import de.novatec.bpm.service.TicketService;
 import de.novatec.bpm.worker.MoneyWorker;
@@ -27,8 +28,8 @@ public class WorkerConfig {
     }
 
     @Bean
-    public TicketWorker ticketWorker(TicketService ticketService) {
-        return new TicketWorker(ticketService);
+    public TicketWorker ticketWorker(TicketService ticketService, QRCodeService qrCodeService) {
+        return new TicketWorker(ticketService, qrCodeService);
     }
 
 }

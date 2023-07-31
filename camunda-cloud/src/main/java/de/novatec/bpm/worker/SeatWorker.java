@@ -1,22 +1,18 @@
 package de.novatec.bpm.worker;
 
-import de.novatec.bpm.model.Reservation;
 import de.novatec.bpm.process.ProcessVariables;
 import de.novatec.bpm.service.SeatService;
 import de.novatec.bpm.service.TicketService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
-import io.camunda.zeebe.spring.client.annotation.VariablesAsType;
+import io.camunda.zeebe.spring.client.annotation.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static de.novatec.bpm.process.ProcessVariableHandler.getReservation;
-import static de.novatec.bpm.process.ProcessVariableHandler.getSeats;
 
 public class SeatWorker extends AbstractWorker {
 
@@ -32,49 +28,45 @@ public class SeatWorker extends AbstractWorker {
     }
 
     @JobWorker(type = "check-seats", autoComplete = false)
-    public void checkSeats(final JobClient client, final ActivatedJob job, @VariablesAsType Reservation reservation) {
+    public void checkSeats(final JobClient client, final ActivatedJob job, @Variable List<String> seats) {
         logger.info("checking seat availability");
-        List<String> seats = reservation.getSeats();
         if (seats != null && !seats.isEmpty()) {
             boolean available = seatService.seatsAvailable(seats);
-            Map<String, Object> variables = Collections.singletonMap(ProcessVariables.SEATS_AVAILABLE.getName(), available);
-            completeJob(client, job, variables);
+            completeJob(client, job, Map.of(ProcessVariables.SEATS_AVAILABLE.getName(), available));
         } else {
             failJob(client, job, "no seats found");
         }
     }
 
     @JobWorker(type = "reserve-seats", autoComplete = false)
-    public void reserveSeats(final JobClient client, final ActivatedJob job, @VariablesAsType Reservation reservation) {
+    public void reserveSeats(final JobClient client, final ActivatedJob job, @Variable List<String> seats) {
         logger.info("reserving seats");
-        if (reservation != null) {
-            seatService.reserveSeats(reservation.getSeats());
-            long ticketPrice = ticketService.getTicketPrice(reservation);
-            reservation.setPrice(ticketPrice);
-            completeJob(client, job, reservation);
+        if (seats != null && !seats.isEmpty()) {
+            seatService.reserveSeats(seats);
+            long ticketPrice = ticketService.getTicketPrice(seats);
+            completeJob(client, job, Map.of(ProcessVariables.TICKET_PRICE.getName(), ticketPrice));
         } else {
             failJob(client, job, "no seats found");
         }
     }
 
     @JobWorker(type = "alt-seats", autoComplete = false)
-    public void alternativeSeats(final JobClient client, final ActivatedJob job, @VariablesAsType Reservation reservation) {
+    public void alternativeSeats(final JobClient client, final ActivatedJob job, @Variable String reservationId, @Variable List<String> seats) {
         logger.info("getting alternative seats");
-        if (reservation != null) {
-            List<String> alternativeSeats = seatService.getAlternativeSeats(reservation.getSeats());
-            reservation.setSeats(alternativeSeats);
-            offerAltSeats(alternativeSeats, reservation.getReservationId());
-            completeJob(client, job, reservation);
+        if (seats != null && !seats.isEmpty()) {
+            List<String> alternativeSeats = seatService.getAlternativeSeats(seats);
+            offerAltSeats(alternativeSeats, reservationId);
+            completeJob(client, job, Map.of(ProcessVariables.SEATS.getName(), alternativeSeats));
         } else {
             failJob(client, job, "no seats found");
         }
     }
 
     @JobWorker(type = "release-seats", autoComplete = false)
-    public void releaseSeats(final JobClient client, final ActivatedJob job, @VariablesAsType Reservation reservation) {
+    public void releaseSeats(final JobClient client, final ActivatedJob job, @Variable List<String> seats) {
         logger.info("releasing seats");
-        if (reservation != null) {
-            seatService.releaseSeats(reservation.getSeats());
+        if (seats != null && !seats.isEmpty()) {
+            seatService.releaseSeats(seats);
             completeJob(client, job);
         } else {
             failJob(client, job, "no seats found");

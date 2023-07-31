@@ -1,6 +1,7 @@
 package de.novatec.bpm.controller;
 
-import de.novatec.bpm.model.Reservation;
+import de.novatec.bpm.model.Request;
+import de.novatec.bpm.process.ProcessVariables;
 import io.camunda.zeebe.client.ZeebeClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,13 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static de.novatec.bpm.process.ProcessMessage.SEATS_VERIFIED;
 
 @RestController
 public class CinemaController {
-
     private final ZeebeClient zeebeClient;
     private final Logger logger = LoggerFactory.getLogger(CinemaController.class);
 
@@ -23,12 +24,16 @@ public class CinemaController {
     }
 
     @PostMapping("/reservation")
-    public ResponseEntity<String> reserveSeat(@RequestBody Reservation reservation) {
-        String reservationId = "RESERVATION-" + UUID.randomUUID();
-        reservation.setReservationId(reservationId);
-        zeebeClient.newCreateInstanceCommand().bpmnProcessId("bpmn-cinema-ticket-reservation")
+    public ResponseEntity<String> reserveSeat(@RequestBody Request request) {
+        String reservationId = "reservation-" + UUID.randomUUID();
+        zeebeClient.newCreateInstanceCommand()
+                .bpmnProcessId("bpmn-cinema-ticket-reservation")
                 .latestVersion()
-                .variables(reservation)
+                .variables(Map.of(
+                        ProcessVariables.RESERVATION_ID.getName(), reservationId,
+                        ProcessVariables.SEATS.getName(), request.getSeats(),
+                        ProcessVariables.NAME.getName(), request.getName()
+                ))
                 .send()
                 .join();
         logger.info("Reservation issued: " + reservationId);

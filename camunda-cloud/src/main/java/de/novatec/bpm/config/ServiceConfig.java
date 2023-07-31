@@ -1,6 +1,7 @@
 package de.novatec.bpm.config;
 
 import de.novatec.bpm.service.PaymentService;
+import de.novatec.bpm.service.QRCodeService;
 import de.novatec.bpm.service.SeatService;
 import de.novatec.bpm.service.TicketService;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,5 +27,10 @@ public class ServiceConfig {
     @Bean
     public TicketService ticketService() {
         return new TicketService();
+    }
+
+    @Bean
+    public QRCodeService qrCodeService() {
+        return new QRCodeService();
     }
 }
