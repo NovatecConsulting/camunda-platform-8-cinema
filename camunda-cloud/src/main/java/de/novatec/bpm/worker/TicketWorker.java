@@ -2,17 +2,13 @@ package de.novatec.bpm.worker;
 
 import de.novatec.bpm.model.Ticket;
 import de.novatec.bpm.process.ProcessVariables;
-import de.novatec.bpm.service.QRCodeService;
 import de.novatec.bpm.service.TicketService;
-import io.camunda.zeebe.client.api.response.ActivatedJob;
-import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
 import io.camunda.zeebe.spring.client.annotation.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.Collections;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 

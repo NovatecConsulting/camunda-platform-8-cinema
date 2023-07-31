@@ -1,7 +1,6 @@
 package de.novatec.bpm.config;
 
 import de.novatec.bpm.service.PaymentService;
-import de.novatec.bpm.service.QRCodeService;
 import de.novatec.bpm.service.SeatService;
 import de.novatec.bpm.service.TicketService;
 import de.novatec.bpm.worker.MoneyWorker;

@@ -2,7 +2,6 @@ package de.novatec.bpm.worker;
 
 import de.novatec.bpm.process.ProcessVariables;
 import de.novatec.bpm.service.SeatService;
-import de.novatec.bpm.service.TicketService;
 import io.camunda.zeebe.client.api.response.ActivatedJob;
 import io.camunda.zeebe.client.api.worker.JobClient;
 import io.camunda.zeebe.spring.client.annotation.JobWorker;
