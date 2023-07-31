@@ -26,9 +26,10 @@ Camunda Platform 8 Cinema is a showcase for the Camunda platform 8 where one can
 - use a REST client to make a reservation:
     - endpoint `localhost:8087/reservation`
     - POST request
-        - body: `{ "userId":"max.mustermann", "seats": [ "A1", "A2" ] }`
+        - body: `{ "name":"Max Mustermann", "seats": [ "A1", "A2" ] }`
         - content-type: `application/json`
         - no auth necessary
 - check the log output
 - OR: open (local) Operate instance (localhost:8081 user/pw: demo:demo)
+- alternative seats are offered in the log output of your IDE in form of an URL
 - in case alternative seats are offered you can also check Operate for the current running instance
