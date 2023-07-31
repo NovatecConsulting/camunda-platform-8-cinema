@@ -25,10 +25,9 @@ public class ServiceConfig {
     }
 
     @Bean
-    public TicketService ticketService() {
-        return new TicketService();
+    public TicketService ticketService(QRCodeService qrCodeService) {
+        return new TicketService(qrCodeService);
     }
-
     @Bean
     public QRCodeService qrCodeService() {
         return new QRCodeService();

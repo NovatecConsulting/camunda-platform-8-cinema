@@ -18,18 +18,18 @@ public class WorkerConfig {
     private int port;
 
     @Bean
-    public MoneyWorker moneyWorker(PaymentService paymentService) {
-        return new MoneyWorker(paymentService);
+    public MoneyWorker moneyWorker(PaymentService paymentService, TicketService ticketService) {
+        return new MoneyWorker(paymentService, ticketService);
     }
 
     @Bean
-    public SeatWorker seatWorker(SeatService seatService, TicketService ticketService) {
-        return new SeatWorker(seatService, ticketService, port);
+    public SeatWorker seatWorker(SeatService seatService) {
+        return new SeatWorker(seatService, port);
     }
 
     @Bean
-    public TicketWorker ticketWorker(TicketService ticketService, QRCodeService qrCodeService) {
-        return new TicketWorker(ticketService, qrCodeService);
+    public TicketWorker ticketWorker(TicketService ticketService) {
+        return new TicketWorker(ticketService);
     }
 
 }

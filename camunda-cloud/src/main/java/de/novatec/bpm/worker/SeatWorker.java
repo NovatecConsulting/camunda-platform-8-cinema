@@ -10,7 +10,6 @@ import io.camunda.zeebe.spring.client.annotation.Variable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -18,12 +17,10 @@ public class SeatWorker extends AbstractWorker {
 
     private final Logger logger = LoggerFactory.getLogger(SeatWorker.class);
     private final SeatService seatService;
-    private final TicketService ticketService;
     private final int port;
 
-    public SeatWorker(SeatService seatService, TicketService ticketService, int port) {
+    public SeatWorker(SeatService seatService, int port) {
         this.seatService = seatService;
-        this.ticketService = ticketService;
         this.port = port;
     }
 
@@ -43,8 +40,7 @@ public class SeatWorker extends AbstractWorker {
         logger.info("reserving seats");
         if (seats != null && !seats.isEmpty()) {
             seatService.reserveSeats(seats);
-            long ticketPrice = ticketService.getTicketPrice(seats);
-            completeJob(client, job, Map.of(ProcessVariables.TICKET_PRICE.getName(), ticketPrice));
+            completeJob(client, job);
         } else {
             failJob(client, job, "no seats found");
         }

@@ -4,7 +4,6 @@ public enum ProcessVariables {
 
     SEATS_AVAILABLE("seatsAvailable"),
     TICKET("ticket"),
-    TICKET_PRICE("ticketPrice"),
     SEATS("seats"),
     RESERVATION_ID("reservationId"),
     NAME("name");
