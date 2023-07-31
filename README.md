@@ -1,5 +1,5 @@
-## BPMN Cinema
-Camunda Cinema Cloud is a showcase for the Camunda Cloud platform
+## Camunda Platform 8 Cinema
+Camunda Platform 8 Cinema is a showcase for the Camunda platform 8 where one can reserve tickets for an imaginary cinema
 
 ### Engines
 - Camunda Platform 8 (Zeebe 8.2.x)
